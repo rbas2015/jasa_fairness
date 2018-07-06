@@ -1,5 +1,116 @@
 \subsection{CAUSAL INFERENCE}
 
-TODO, talk about RCM and SCM
-\cite{pearl:00}
+Following the \emph{potential outcomes} formulation of causal
+modeling \cite{rubin:74}, also known as the \emph{Rubin Causal Model}
+(RCM), we denote by $Y(a)$ a random variable under an intervention
+that fixes the value of $A$ at level $a$. The notation $Y(a, u)$ is
+used to denote a particular realization for an individual indexed by
+$u$. $Y(a)$ can be understood as an alternative representation for
+$Y(a, U)$, where $U$ is a set of (latent) random variables
+characterizing an individual, an interpretation we will make use of.
+
+Such random variables are postulated to exist for each treatment level
+that $A$ can take. This means, for instance, that $\{Y(a), Y(a')\}$
+follows a bivariate distribution for $a \neq a'$. The caveat is that
+only one of such potential outcomes can be observed at any data point,
+as treatment assigments correspond to particular events in time, and
+only one of those events can take place. Hence, if for an individual
+$u$ we have that $A = a$, then $Y(a', u)$ is a \emph{counterfactual}
+variable. The \emph{factual} realization in this case is linked to the
+observed outcome $Y$ by the (postulated) \emph{consistency axiom} $Y =
+Y(a, u)$. Much of the statistical machinery for inferring causal
+effects treats this problem as a missing data model \cite{imbens:15}
+to estimate quantities such as the \emph{average treatment effect}
+$\mathbb E[Y(a) - Y(a')]$ that assesses the difference between two
+particular treatment levels.
+
+While the RCM framework postulates and exploit the existence of a
+joint distribution over observed variables and potential outcomes, it
+does not prescribe a particular approach for formulating such
+distributions from more fundamental building blocks. In fact, most
+applications of the RCM target specific pairs of cause-effects,
+avoiding systems of mediating variables which will be essential to our
+formulation. In this paper, we will rely on the Structural Causal
+Model (SCM) framework of \cite{pearl:00}, which has close links to
+\cite{robins:86} and the counterfactual-agnostic graphical approach of
+\cite{sgs:93}. The link between RCM and SCM is now well-understood
+\cite{pearl:00,morgan:14}, being equivalent in the sense of drawing
+the same conclusions given the complete data joint distribution. The
+strength of the SCM framework is in providing a constructive procedure
+to translate scientific assumptions into a probability measure over
+factuals and counterfactuals.  A causal model in this framework is
+given as a triple $(U, V, F)$ of sets such that
+%
+\begin{itemize}
+\item $U$ is a set of latent \emph{background} variables, which are
+  factors not caused by any variable in the set $V$ of {\emph
+    observable} variables;
+\item $F$ is a set of functions $\{f_1, \dots, f_n\}$, one for each $V_i \in V$, such
+that $V_i = f_i(pa_i, U_{pa_i})$, $pa_i \subseteq V \backslash
+\{V_i\}$ and $U_{pa_i} \subseteq U$. Such equations are also known as
+\emph{structural equations} \cite{bol:89}.
+\end{itemize}
+%
+
+%The notation ``$pa_i$'' refers to the ``parents'' of $V_i$ and is
+%motivated by the assumption that the model factorizes according to a
+%directed acyclic graph (DAG). That is, we can define a directed graph
+%${\mathcal G}=(U \cup V, \mathcal E )$ where each node is an element
+%of $U \cup V$, and each edge from some $Z \subseteq U \cup V$ to $V_i$
+%indicates that $Z \in pa_i \cup U_{pa_i}$. By construction, $\mathcal
+%G$ is acyclic.
+
+The notation ``$pa_i$'' refers to the ``parents'' of $V_i$ and is
+motivated by the assumption that the model factorizes as a directed
+graph, here assumed to be a directed acyclic graph (DAG).  The model
+is causal in that, given a distribution $P(U)$ over the background
+variables $U$, we can derive the distribution of a subset $Z \subseteq
+V$ following an intervention on $V\setminus Z$. The operational
+definition of an intervention on variable $V_i$ is taken as the
+substitution of equation $V_i = f_i(pa_i, U_{pa_i})$ with the equation
+$V_i = v$ for some $v$. This captures the idea of an agent, external
+to the system, modifying it by forcefully assigning value $v$ to
+$V_i$, for example as in a randomized experiment.
+
+The specification of $F$ is a strong assumption but allows for the
+calculation of counterfactual quantities.  In brief, consider the
+following counterfactual statement, ``the value of $Y$ if $Z$ had
+taken value $z$,'' for two observable variables $Z$ and $Y$. By
+assumption, the state of any observable variable is fully determined
+by the background variables and structural equations. The
+counterfactual is modeled as the solution for $Y$ for a given $U = u$
+where the equations for $Z$ are replaced with $Z \!=\!  z$. This is
+equivalent to the potential outcome $Y(z, u)$ \cite{pearl:00}
+by taking the realization $U = u$ as the index of an (equivalence
+class of) individual(s) who will respond to treatment $Z = z$
+with the outcome $Y(z, u)$.
+
+Counterfactual inference, as specified by a causal model $(U, V, F)$
+given evidence $W$, is the computation of probabilities $P(Y(z)\ |\ W
+\!=\! w) = P(Y(z, U)\ |\ W \!=\! w)$, where $W$, $Z$ and $Y$ are
+subsets of $V$ and the randomness is in $U$. Inference proceeds in
+three steps, as explained in more detail in Chapter 4 of
+\cite{pearl:16}: 1. {\bf Abduction}: for a given prior on $U$, compute
+the posterior distribution of $U$ given the evidence $W = w$; 2. {\bf
+  Action}: substitute the equations for $Z$ with the interventional
+values $z$, resulting in the modified set of equations $F_z$; 3. {\bf
+  Prediction}: compute the implied distribution on the remaining
+elements of $V$ using $F_z$ and the posterior $P(U\ |\ W = w)$.
+
+\subsection{A CAUSAL BASIS FOR FAIRNESS}
+
+As discussed in the previous sections, there are numerous definitions
+of fairness based on associations. Although background knowledge is
+used to postulate which variables should belong to the protected
+attribute set $A$, it is otherwise not obvious when one criterion
+should be prioritized as several of them are incompatible.
+
+Many of the existing approaches can be understood as introducing
+constraints on classifiers so that the proposed predictions are
+suboptimal in a decision theoretical sense, by not providing the best
+prediction according to a utility function and observed information.
+We propose instead to focus directly on which \emph{information} in $A
+\cup X$ should be allowed in building a predictor (using any
+statistical method), where given this selected information an optimal point
+prediction is allowed.
 
