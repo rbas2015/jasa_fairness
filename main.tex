@@ -1,0 +1,66 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=1.0in]{geometry}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{floatrow}
+
+\newcommand{\ci}{\mathrel{\text{\scalebox{1.07}{$\perp\mkern-10mu\perp$}}}}
+
+\title{A Causal Approach to Algorithmic Fairness}
+\author{The Alan Turing Institute, UK}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  TO DO
+\end{abstract}
+
+% INTRODUCTION
+
+\input{intro.tex}
+
+% BACKGROUND
+
+\input{background_header.tex}
+
+% BACKGROUND -> FAIRNESS
+
+\input{background_fairness.tex}
+
+% BACKGROUND -> CAUSAL INFERENCE
+
+\input{background_causal.tex}
+
+% COUNTERFACTUAL FAIRNESS
+
+\input{cfairness.tex}
+
+% DELAYED IMPACT, SELECTION BIAS AND OTHER MECHANISMS
+
+\input{cfairness_other.tex}
+
+% MULTIPLE-MODEL INTEGRATION
+
+\input{multiworld.tex}
+
+\section{EXPERIMENTS}
+
+TODO
+
+\section{CONCLUSION}
+
+TO DO
+
+\bibliographystyle{abbrv}
+
+\small{
+\bibliography{rbas}
+}
+
+\end{document}
